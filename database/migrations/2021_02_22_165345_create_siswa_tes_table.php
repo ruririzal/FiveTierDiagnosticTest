@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSiswaTesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('siswa_tes', function (Blueprint $table) {
+            $table->id();
+            $table->timestamp('waktu_mulai')->nullable();
+            $table->timestamp('waktu_selesai')->nullable();
+            $table->unsignedBigInteger('siswa_id');
+            $table->foreign('siswa_id', 'siswa_id_st')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('siswa_tes');
+    }
+}

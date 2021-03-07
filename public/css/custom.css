@@ -1,0 +1,16 @@
+.bootstrap-duallistbox-container .info, .bootstrap-duallistbox-container .clear1, .bootstrap-duallistbox-container .clear2{
+    font-size: inherit !important;
+    padding: 0 !important;
+}
+/* .select2-container--default .select2-selection--multiple .select2-selection__choice{
+    color:#000;
+    font-weight:bold;
+} */
+#old_mapid, #mapid { height: 60vh; }
+.select2-container--default .select2-selection--single .select2-selection__clear{
+    font-size: 32px;
+}
+.input-group-text.btn-primary{
+    color:#fff;
+    background-color:#007bff;
+}
