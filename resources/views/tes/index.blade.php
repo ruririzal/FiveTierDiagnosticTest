@@ -85,8 +85,10 @@
                 <div class="tab-content">
                     @foreach($soal as $key => $itemSoal)
                         <div class="tab-pane font-weight-bold" data-nomor="{{$key+1}}" id="soal-{{$key+1}}" role="tabpanel" aria-labelledby="soal-{{$key+1}}">
-                            <span class="mr-5">No Soal : {{ $key+1 }}</span>
-                            <span>ID Soal : {{ $itemSoal->id }}</span>
+                            <span class="mr-5">
+                                No Soal : {{ $key+1 }}
+                                <input type="hidden" name="urutan_soal_tes" class="urutan_soal_tes" value="{{ $key+1 }}">
+                            </span>
                             <div class="teks mt-3 mb-2">{!! $itemSoal->teks !!}</div>
                             @foreach($itemSoal->jawaban as $itemJawaban)
                                 <label for="jawaban_{{ $itemJawaban->id }}" class="d-flex teks">
@@ -160,7 +162,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Kode Soal yang Tidak Paham Konsep 
+                            No Soal yang Tidak Paham Konsep 
                         </th>
                         <th>:</th>
                         <th>{{ $tes->rekapTesSiswa->{'list_' . \App\Services\CalculationOfConceptionCriteria::CRITERIA_NU['id']} }}</th>
@@ -174,7 +176,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Kode Soal yang Miskonsepsi
+                            No Soal yang Miskonsepsi
                         </th>
                         <th>:</th>
                         <th>{{ $tes->rekapTesSiswa->{'list_' . \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id']} }}</th>
@@ -188,7 +190,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Kode Soal yang Paham Konsep 
+                            No Soal yang Paham Konsep 
                         </th>
                         <th>:</th>
                         <th>{{ $tes->rekapTesSiswa->{'list_' . \App\Services\CalculationOfConceptionCriteria::CRITERIA_SU['id']} }}</th>
@@ -202,7 +204,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Kode Soal yang Paham Konsep Sebagian
+                            No Soal yang Paham Konsep Sebagian
                         </th>
                         <th>:</th>
                         <th>{{ $tes->rekapTesSiswa->{'list_' . \App\Services\CalculationOfConceptionCriteria::CRITERIA_PU['id']} }}</th>
@@ -249,6 +251,7 @@
                 $(document).on('click', '.jawaban, .is_jawaban_yakin, .alasan_jawaban, .is_alasan_yakin, .tier_five', function(e){
                     let input = $(e.target);
                     let tab_pane = input.closest('.tab-pane');
+                    let urutan_soal_tes = $('.urutan_soal_tes', tab_pane).val();
                     let jawaban = $('.jawaban:checked', tab_pane).val();
                     let is_jawaban_yakin = $('.is_jawaban_yakin:checked', tab_pane).val();
                     let alasan_jawaban = $('.alasan_jawaban:checked', tab_pane).val();
@@ -256,6 +259,7 @@
                     let tier_five = $('.tier_five:checked', tab_pane).val();
                     
                     let arr = {
+                        'urutan_soal_tes' : urutan_soal_tes,
                         'tes_id' : '{{ $tes->id }}',
                         'soal_id' : input.data('soal'),
                         'siswa_id' : '{{ auth()->id() }}',

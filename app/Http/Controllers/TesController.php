@@ -61,7 +61,10 @@ class TesController extends Controller
     {
         $tes = SiswaTes::where('siswa_id', auth()->id())->first();
         
-        $request->validate([
+        $validated = $request->validate([
+            'urutan_soal_tes' => [
+                'required', 'numeric', 'min:0'
+            ],
             'tes_id' => [
                 'required', 'in:'.$tes->id
             ],
@@ -90,10 +93,12 @@ class TesController extends Controller
                 'in:'.implode(',', TierFiveEnums::SEMUA_ID)
             ],
         ]);
+        
+        $validated['siswa_id'] = auth()->id();
 
         $jawaban_siswa = JawabanSiswaPerSoal::updateOrCreate(
             $request->only(['tes_id', 'soal_id', 'jawaban_id']),
-            $request->all()
+            $validated
         );
 
         $belum_dijawab = $this->getJumlahBelumDijawab();

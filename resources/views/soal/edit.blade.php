@@ -168,7 +168,7 @@
         });
 
         $(function(){
-            let indexTabelJawabanRow = {{ count($jawaban_teks) +1 }};
+            let indexTabelJawabanRow = '{{ count($jawaban_teks) +1 }}';
             $('#tambah_jawaban').on('click',function(){
                 $('#jawaban_tabel tbody').append(
                     $('<tr>' + 
@@ -201,8 +201,8 @@
                     $(this).bootstrapSwitch('state', $(this).prop('checked'));
                 });
                 indexTabelJawabanRow++;
-            })
-            let indexTabelAlasanRow = {{ count($alasan_teks) +1 }};
+            });
+            let indexTabelAlasanRow = '{{ count($alasan_teks) +1 }}';
             $('#tambah_alasan').on('click',function(){
                 $('#alasan_tabel tbody').append(
                     $('<tr>' + 

@@ -70,7 +70,7 @@ class BuatRekapJawabanJob implements ShouldQueue
                 list($criteria, $conception)  = (new CalculationOfConceptionCriteria())->get($tier_1, $tier_2, $tier_3, $tier_4, $tier_5);
                 
                 $this->konsepsi_variable['jumlah_' . $criteria['id']]++;
-                $this->konsepsi_variable['list_' . $criteria['id']][] = $item->soal->id;
+                $this->konsepsi_variable['list_' . $criteria['id']][] = $item->urutan_soal_tes;
 
                 if($criteria == CalculationOfConceptionCriteria::CRITERIA_MC){
                     $this->konsepsi_variable['jumlah_' . $criteria['id'] . '_' .  $tier_5]++;

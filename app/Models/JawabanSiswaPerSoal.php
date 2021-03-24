@@ -14,6 +14,7 @@ class JawabanSiswaPerSoal extends Model
     ];
 
     protected $fillable = [
+        'urutan_soal_tes',
         'tes_id',
         'soal_id',
         'siswa_id',
