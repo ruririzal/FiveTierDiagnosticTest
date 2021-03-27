@@ -22,7 +22,8 @@ class JawabanSiswaPerSoal extends Model
         'is_jawaban_yakin',
         'alasan_jawaban_soal_id',
         'is_alasan_yakin',
-        'keyakinan_jawaban_dan_alasan_id'
+        'keyakinan_jawaban_dan_alasan_id',
+        'tier_five',
     ];
 
     protected $cast = [
