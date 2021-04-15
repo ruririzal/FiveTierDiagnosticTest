@@ -92,7 +92,7 @@ class BuatRekapJawabanJob implements ShouldQueue
                 [ 'jumlah_tidak_dijawab' => $jumlah_soal - $jumlah_dijawab->count(),], 
                 $this->konsepsi_variable
             );
-            dd($data, $jumlah_soal, $jumlah_dijawab);
+
             DB::beginTransaction();
             
             RekapHasilTesSiswa::updateOrCreate(
