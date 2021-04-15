@@ -56,6 +56,7 @@ class BuatRekapJawabanJob implements ShouldQueue
                 if($item['id'] == CalculationOfConceptionCriteria::CRITERIA_MC['id']){
                     foreach(\App\Enums\TierFiveEnums::SEMUA_CAMELCASE() as $tier_five){
                         $this->konsepsi_variable['jumlah_' . $item['id'] . '_'.  $tier_five] = 0;
+                        $this->konsepsi_variable['list_' . $item['id'] . '_'.  $tier_five] = [];
                     }
                 }
             }        
@@ -74,18 +75,24 @@ class BuatRekapJawabanJob implements ShouldQueue
 
                 if($criteria == CalculationOfConceptionCriteria::CRITERIA_MC){
                     $this->konsepsi_variable['jumlah_' . $criteria['id'] . '_' .  $tier_5]++;
+                    $this->konsepsi_variable['list_' . $criteria['id'] . '_' .  $tier_5][] = $item->urutan_soal_tes;
                 }
             });
     
             foreach(CalculationOfConceptionCriteria::ALL_CRITERIA as $item){
                 $this->konsepsi_variable['list_' . $item['id']] = implode(',', $this->konsepsi_variable['list_' . $item['id']]);
+                if($item == CalculationOfConceptionCriteria::CRITERIA_MC){
+                    foreach(\App\Enums\TierFiveEnums::SEMUA_CAMELCASE() as $tier_five){
+                        $this->konsepsi_variable['list_' . $item['id'] . '_'.  $tier_five] = implode(',', $this->konsepsi_variable['list_' . $item['id'] . '_'.  $tier_five]);
+                    }
+                }
             }
 
             $data = array_merge(
                 [ 'jumlah_tidak_dijawab' => $jumlah_soal - $jumlah_dijawab->count(),], 
                 $this->konsepsi_variable
             );
-            
+            dd($data, $jumlah_soal, $jumlah_dijawab);
             DB::beginTransaction();
             
             RekapHasilTesSiswa::updateOrCreate(

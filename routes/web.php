@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('soal/media', 'SoalController@storeMedia')->name('store_media');
         Route::resource('soal', 'SoalController');
         Route::get('siswa/download', 'HasilTesSiswaController@download')->name('download_tes');
+        Route::get('siswa/hitung-ulang-hasil-tes', 'HasilTesSiswaController@reCalculateAllRekapTes')->name('hitung_ulang_hasil_tes');
+        Route::delete('siswa/delete/{siswa}', 'SiswaController@destroy')->name('delete_siswa');
         Route::resource('siswa', 'HasilTesSiswaController')->only(['index', 'show', 'destroy']);
     });
 });

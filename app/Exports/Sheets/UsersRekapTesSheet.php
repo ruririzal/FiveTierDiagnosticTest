@@ -21,10 +21,12 @@ class UsersRekapTesSheet implements FromQuery, WithHeadings, WithTitle
         foreach(\App\Services\CalculationOfConceptionCriteria::ALL_CRITERIA as $item){
             if($item['id'] == \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id']){
                 foreach(\App\Enums\TierFiveEnums::SEMUA_CAMELCASE() as $tier_five){
-                    $select_rekap[] = DB::raw("IFNULL({$rekap_tes}.jumlah_{$item['id']}_{$tier_five}, 0)");
+                    $select_rekap[] = DB::raw("IFNULL({$rekap_tes}.list_{$item['id']}_{$tier_five}, 0)");
                 }
+                $select_rekap[] = DB::raw("IFNULL({$rekap_tes}.jumlah_{$item['id']}, 0)");
+            }else{
+                $select_rekap[] = DB::raw("IFNULL({$rekap_tes}.list_{$item['id']}, 0)");
             }
-            $select_rekap[] = DB::raw("IFNULL({$rekap_tes}.jumlah_{$item['id']}, 0)");
         }
         return User::query()
             ->select([
@@ -63,7 +65,7 @@ class UsersRekapTesSheet implements FromQuery, WithHeadings, WithTitle
             else $firstRow[] = $item['text'];
         }
         foreach(\App\Enums\TierFiveEnums::SEMUA as $item){
-            $secondRow[] = strtoupper(\App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id'] . '-' . $item['conception_code']);
+            $secondRow[] = ucfirst($item['conception_text']);
         }
         $secondRow[] = 'MC Total';
         return [

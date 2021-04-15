@@ -54,7 +54,9 @@ class UsersDetailTesSheet implements FromQuery, WithHeadings, WithTitle, WithMap
             })->leftJoin($alasan_jawaban, function($join) use ($jawaban_siswa_per_soal, $soal, $alasan_jawaban){
                 return $join->on($alasan_jawaban . '.id', '=', $jawaban_siswa_per_soal . '.alasan_jawaban_soal_id');
                     // ->where($alasan_jawaban . '.soal_id', $soal . '.id');
-            });
+            })
+            ->where('siswa_id', $this->user->id)
+            ;
     }
     
     /**

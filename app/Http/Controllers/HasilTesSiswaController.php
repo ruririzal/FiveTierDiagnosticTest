@@ -31,6 +31,16 @@ class HasilTesSiswaController extends Controller
         return view('siswa.index', compact('all_siswa'));
     }
 
+    public function reCalculateAllRekapTes()
+    {
+        $all_siswa = User::where('is_admin', 0)->pluck('id');
+        foreach($all_siswa as $siswa_id){
+            BuatRekapJawabanJob::dispatch($siswa_id);
+        }
+
+        return back()->with('message', 'Proses perhitungan ulang rekap tes sedang berjalan');
+    }
+
     public function show(User $user)
     {
         $siswa = $user;
@@ -45,6 +55,7 @@ class HasilTesSiswaController extends Controller
 
     public function download()
     {
+        set_time_limit(100);
         return (new UsersTesExport)->download('hasil_tes_siswa.xlsx');
     }
 }

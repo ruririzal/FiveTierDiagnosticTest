@@ -39,6 +39,7 @@ class RekapHasilTesSiswa extends Model
             if($item['id'] == \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id']){
                 foreach(\App\Enums\TierFiveEnums::SEMUA_CAMELCASE() as $tier_five){
                     $konsepsi[] = 'jumlah_' . $item['id'] . '_'.  $tier_five;
+                    $konsepsi[] = 'list_' . $item['id'] . '_'.  $tier_five;
                 }
             }
         }   

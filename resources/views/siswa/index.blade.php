@@ -16,6 +16,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <a href="{{ route('download_tes')}}" class="btn btn-sm btn-success mb-3" target="_blank">Download Tes</a>
+                <a href="{{ route('hitung_ulang_hasil_tes')}}" class="btn btn-sm btn-success mb-3">Hitung Ulang Hasil Tes</a>
                 {{ $all_siswa->withQueryString()->links() }}
                 <table class="table table-bordered table-striped table-hover datatable" style="width: 100%">
                     <thead>
@@ -35,25 +36,38 @@
                             @endforeach
                         </tr>
                         <tr>
-                            @foreach(\App\Enums\TierFiveEnums::SEMUA as $item)
-                                <th>{{ strtoupper(\App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id'] . '-' . $item['conception_code']) }}</th>
+                            @foreach(\App\Services\CalculationOfConceptionCriteria::ALL_CRITERIA as $item)
+                                @if($item == \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC)
+                                    @foreach(\App\Enums\TierFiveEnums::SEMUA as $item)
+                                        <th>{{ ucfirst($item['conception_text']) }}</th>
+                                    @endforeach
+                                    <th>Total</th>
+                                @endif
                             @endforeach
-                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($all_siswa as $key => $itemSiswa)
                             <tr data-entry-id="{{ $itemSiswa->id }}">
                                 <td>{{ $itemSiswa->id }}</td>
-                                <td>{{ $itemSiswa->email }}</td>
-                                <td>{{ $itemSiswa->name }}</td>
+                                <td>
+                                    {{ $itemSiswa->email }}
+                                    <form method="POST" action="{{ route('delete_siswa', ['siswa' => $itemSiswa->id]) }}" class="d-inline">
+                                        @csrf
+                                        @method("DELETE")
+                                        <button type="submit" class="btn btn-sm btn-danger">Hapus Siswa</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    {{ $itemSiswa->name }}
+                                </td>
                                 <td>{{ $itemSiswa->kelas }}</td>
                                 @if($itemSiswa->tes)
                                     <td>
                                         <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="{{ $itemSiswa->tes->waktu_mulai . ' s.d ' . $itemSiswa->tes->waktu_selesai }}">
-                                            Cek
+                                            Waktu
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="{{ $itemSiswa->tes->id }}">Hapus</button>
+                                        <button type="button" class="btn btn-sm btn-warning deleteBtn" data-id="{{ $itemSiswa->tes->id }}">Reset Tes</button>
                                     </td>
                                     <td>{{ optional($itemSiswa->tes->rekapTesSiswa)->jumlah_tidak_dijawab }}</td>
                                 @else
@@ -64,14 +78,18 @@
                                     @if($item['id'] == \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id'])
                                         @foreach(\App\Enums\TierFiveEnums::SEMUA_CAMELCASE() as $tier_five)
                                             @if($itemSiswa->tes)
-                                                <td>{{ optional($itemSiswa->tes->rekapTesSiswa)->{'jumlah_' . $item['id'] . '_' . $tier_five} }}</td>
+                                                <td>{{ optional($itemSiswa->tes->rekapTesSiswa)->{'list_' . $item['id'] . '_' . $tier_five} }}</td>
                                             @else
                                                 <td></td>
                                             @endif
                                         @endforeach
                                     @endif
                                     @if($itemSiswa->tes)
-                                        <td>{{ optional($itemSiswa->tes->rekapTesSiswa)->{'jumlah_' . $item['id']} }}</td>
+                                        @if($item['id'] == \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id'])
+                                            <td>{{ optional($itemSiswa->tes->rekapTesSiswa)->{'jumlah_' . $item['id']} }}</td>
+                                        @else
+                                            <td>{{ optional($itemSiswa->tes->rekapTesSiswa)->{'list_' . $item['id']} }}</td>
+                                        @endif
                                     @else
                                         <td></td>
                                     @endif
