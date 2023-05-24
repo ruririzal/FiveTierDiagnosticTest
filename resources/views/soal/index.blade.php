@@ -32,7 +32,7 @@
                     <tbody>
                         @forelse ($all_soal as $key => $item)
                             <tr data-entry-id="{{ $item->id }}">
-                                <td>{{ $item->id }}</td>
+                                <td>{{ $all_soal->firstItem() + $loop->index }}</td>
                                 <td>{{ Str::limit($item->teks ?? '', 20) }} ...</td>
                                 <td>{{ $item->jawaban_count }}</td>
                                 <td>{{ $item->is_aktif ? 'Ya' : 'Tidak' }}</td>

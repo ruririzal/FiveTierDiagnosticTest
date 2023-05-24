@@ -49,7 +49,7 @@
                     <tbody>
                         @forelse ($all_siswa as $key => $itemSiswa)
                             <tr data-entry-id="{{ $itemSiswa->id }}">
-                                <td>{{ $itemSiswa->id }}</td>
+                                <td>{{ $all_siswa->firstItem() + $loop->index }}</td>
                                 <td>
                                     {{ $itemSiswa->email }}
                                     <form method="POST" action="{{ route('delete_siswa', ['siswa' => $itemSiswa->id]) }}" class="d-inline">
