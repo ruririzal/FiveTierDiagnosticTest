@@ -31,7 +31,7 @@ DB_USERNAME=root
 3. **Instalasi website**
 ```bash
 php artisan key:generate
-php artisan db:fresh (because i create new command for migrate tables & run the seeder)
+php artisan migrate:fresh --seed
 php artisan storage:link
 ```
 
