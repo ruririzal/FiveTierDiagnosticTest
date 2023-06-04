@@ -13,9 +13,13 @@ class AddDurasiSimulasiTablePengaturan extends Migration
      */
     public function up()
     {
-        Schema::table('pengaturan', function (Blueprint $table) {
-            $table->unsignedBigInteger('durasi_menit_simulasi')->default(0);
-        });
+        try {
+            Schema::table('pengaturan', function (Blueprint $table) {
+                $table->unsignedBigInteger('durasi_menit_simulasi')->default(0);
+            });
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     /**

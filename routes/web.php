@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth', 'TesSedangBerlangsungMiddleware']], funct
         return redirect('/settings');
     });
     Route::get('/migrasi', function(){
+        define('STDIN',fopen("php://stdin","r"));
         Artisan::call('migrate');
     });
     Route::get('/settings', 'HomeController@index')->name('settings');
