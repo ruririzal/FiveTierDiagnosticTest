@@ -81,9 +81,15 @@
                                 <form class="form-horizontal" action="{{ route('update_durasi_tes') }}" method="POST">
                                     @csrf
                                     <div class="form-group row">
-                                        <label for="durasi_menit" class="col-sm-2 col-form-label">Durasi (Menit)</label>
+                                        <label for="durasi_menit" class="col-sm-2 col-form-label">Durasi Tes (Menit)</label>
                                         <div class="col-sm-10">
-                                            <input type="number" min="0" max="3600" name="durasi_menit" class="form-control {{ $errors->has('durasi') ? ' is-invalid' : '' }}" required value="{{ old('durasi_menit', $pengaturan->durasi_menit ?? 0) }}">
+                                            <input type="number" min="0" max="3600" name="durasi_menit" class="form-control {{ $errors->has('durasi_menit') ? ' is-invalid' : '' }}" required value="{{ old('durasi_menit', $pengaturan->durasi_menit ?? 0) }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="durasi_menit" class="col-sm-2 col-form-label">Durasi Simulasi (Menit)</label>
+                                        <div class="col-sm-10">
+                                            <input type="number" min="0" max="3600" name="durasi_menit_simulasi" class="form-control {{ $errors->has('durasi_menit_simulasi') ? ' is-invalid' : '' }}" required value="{{ old('durasi_menit_simulasi', $pengaturan->durasi_menit_simulasi ?? 0) }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">

@@ -2,11 +2,11 @@
 @section('content_header')
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Tes</h1>
+            <h1 class="m-0 text-dark">Simulasi Tes</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Tes</li>
+                <li class="breadcrumb-item active">Simulasi Tes</li>
             </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -18,30 +18,39 @@
                 @if( ! ($tes->waktu_mulai ?? false))
                     <table style="width: 100%">
                         <tr>
-                            <th>Durasi tes : {{ $pengaturan->durasi_menit }} menit</th>
+                            <th>Durasi Simulasi : {{ $pengaturan->durasi_menit_simulasi }} menit</th>
                             <th>Jumlah Soal : {{ $jumlah_soal }}</th>
                         </tr>
                     </table>
-                @elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->greaterThan(now()) && ! $tes->waktu_selesai)
+                @elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
                     <table style="width: 100%">
                         <tr>
-                            <th>Status : Tes Sedang Berlangsung</th>
-                            <th>Waktu Mulai Tes : {{ $tes->waktu_mulai }}</th>
-                            <th id="sisa_waktu">Sisa Waktu : {{ $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->diffAsCarbonInterval() }}</th>
+                            <th>Status : Simulasi Sedang Berlangsung</th>
+                            <th>Waktu Mulai Simulasi : {{ $tes->waktu_mulai }}</th>
+                            <th id="sisa_waktu">Sisa Waktu : {{ $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->diffAsCarbonInterval() }}</th>
                         </tr>
                     </table>
                 @else
-                    <p style="text-align: center"><b>Telah melakukan tes</b></p>
                     <table style="width: 100%">
                         <tr>
-                            <th style="text-align: right">Waktu Mulai Tes</th>
+                            <th>Durasi Simulasi : {{ $pengaturan->durasi_menit_simulasi }} menit</th>
+                            <th>Jumlah Soal : {{ $jumlah_soal }}</th>
+                        </tr>
+                    </table>
+                <span class="text-red text-bold">*Ketika simulasi dimulai, menu lain tidak bisa diakses hingga simulasi diselesaikan!</span>
+                <br>
+                <a href="{{ route('mulai_tes_simulasi') }}" class="btn btn-primary btn-sm">Mulai Ulang Simulasi</a>
+                    <p style="text-align: center"><b>Telah melakukan Simulasi</b></p>
+                    <table style="width: 100%">
+                        <tr>
+                            <th style="text-align: right">Waktu Mulai Simulasi</th>
                             <th>:</th>
                             <th>{{ $tes->waktu_mulai }}</th>
                         </tr>
                         <tr>
-                            <th style="text-align: right">Waktu Selesai Tes</th>
+                            <th style="text-align: right">Waktu Selesai Simulasi</th>
                             <th>:</th>
-                            <th>{{ $tes->waktu_selesai ?? $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit) }}</th>
+                            <th>{{ $tes->waktu_selesai ?? $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi) }}</th>
                         </tr>
                     </table>
                 @endif
@@ -49,11 +58,10 @@
         </div>
         <div class="card-body">
             @if( ! ($tes->waktu_mulai ?? false) )
-                <span class="text-red text-bold">*Tes hanya dapat dilakukan sekali, ketika tes dimulai, menu lain tidak bisa diakses hingga tes diselesaikan!.
-                    <br>Uji coba dapat dilakukan pada menu simulasi tes</span>
+                <span class="text-red text-bold">*Ketika simulasi dimulai, menu lain tidak bisa diakses hingga simulasi diselesaikan!</span>
                 <br>
-                <a href="{{ route('mulai_tes') }}" class="btn btn-primary btn-sm">Mulai Tes</a>
-            @elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->greaterThan(now()) && ! $tes->waktu_selesai)
+                <a href="{{ route('mulai_tes_simulasi') }}" class="btn btn-primary btn-sm">Mulai Simulasi</a>
+            @elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
                 <ul class="nav nav-tabs" id="soalTab" role="tablist">
                     @foreach($soal as $key => $itemSoal)
                         @php
@@ -68,9 +76,9 @@
                         </li>
                     @endforeach
                     <li class="nav-item ml-3 mb-2">
-                        <form action="{{ route('selesai_tes') }}" method="POST" id="selesai_tes_form">
+                        <form action="{{ route('selesai_tes_simulasi') }}" method="POST" id="selesai_tes_simulasi_form">
                             @csrf
-                            <button class="nav-link bg-secondary btn" id="btn_akhir_tes" type="submit">Akhiri Tes</button>
+                            <button class="nav-link bg-secondary btn" id="btn_akhir_tes" type="submit">Akhiri Simulasi</button>
                         </form>
                     </li>
                 </ul>
@@ -178,7 +186,7 @@
                                         <button class="btn btn-sm btn-primary ganti-tab" data-tab="soal-tab-{{$loop->index + 2}}">Selanjutnya</button>
                                     @elseif ($loop->last)
                                         <button class="btn btn-sm btn-primary ganti-tab" data-tab="soal-tab-{{$loop->index}}">Sebelumnya</button>
-                                        <button class="btn btn-sm btn-secondary" id="akhiri_tes">Akhiri Tes</button>
+                                        <button class="btn btn-sm btn-secondary" id="akhiri_tes">Akhiri Simulasi</button>
                                         {{-- This is the last iteration --}}
                                     @else
                                         <button class="btn btn-sm btn-primary ganti-tab" data-tab="soal-tab-{{$loop->index}}">Sebelumnya</button>
@@ -266,7 +274,7 @@
     <script src="{{ asset('plugins/tinymce/tinymce.min.js') }}"></script>
     <script>
         @if( $tes )
-            @if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->greaterThan(now()) && ! $tes->waktu_selesai)
+            @if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
                 function secondsToHms(d) {
                     d = Number(d);
                     var h = Math.floor(d / 3600);
@@ -279,12 +287,12 @@
                     return hDisplay + mDisplay + sDisplay;
                 }
 
-                let sisa_waktu = {{ $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->diffInSeconds() }};
+                let sisa_waktu = {{ $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->diffInSeconds() }};
 
                 setInterval(function(){
                     let text = secondsToHms(sisa_waktu--);
                     if(text == 0){
-                        $('#selesai_tes_form').append('<input type="hidden" name="force" value="1">').submit()
+                        $('#selesai_tes_simulasi_form').append('<input type="hidden" name="force" value="1">').submit()
 
                     }
                     document.getElementById("sisa_waktu").innerText = "Sisa Waktu : " + text;
@@ -342,7 +350,7 @@
                                 'x-csrf-token': _token
                         },
                         type: 'POST',
-                        url: "{{ route('simpan_jawaban') }}",
+                        url: "{{ route('simpan_jawaban_simulasi') }}",
                         data: arr,
                         dataType : 'json'
                     })

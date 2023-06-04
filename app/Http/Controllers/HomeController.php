@@ -26,13 +26,13 @@ class HomeController extends Controller
                 Rule::unique('users', 'email')->ignore(request()->email, 'email'),
             ],
         ]);
-        
+
         $user = \Auth::user();
         $user->update($validatedData);
 
         return redirect()->route('settings')->with('message', 'Profil Berhasil Disimpan');
     }
-    
+
     public function updatePassword(Request $request)
     {
         $validatedData = $request->validate([
@@ -51,6 +51,7 @@ class HomeController extends Controller
 
         $validatedData = $request->validate([
             'durasi_menit' => ['required', 'numeric', 'min:0'],
+            'durasi_menit_simulasi' => ['required', 'numeric', 'min:0'],
         ]);
 
         $pengaturan = Pengaturan::firstOrCreate(['id'=>1], $validatedData);

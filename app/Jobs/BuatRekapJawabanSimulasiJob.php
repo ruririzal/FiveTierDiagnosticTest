@@ -2,19 +2,19 @@
 
 namespace App\Jobs;
 
-use App\Models\Soal;
-use App\Models\SiswaTes;
+use App\Models\SimulasiSoal;
+use App\Models\SimulasiSiswaTes;
 use Illuminate\Bus\Queueable;
-use App\Models\RekapHasilTesSiswa;
+use App\Models\SimulasiRekapHasilTesSiswa;
 use Illuminate\Support\Facades\DB;
-use App\Models\JawabanSiswaPerSoal;
+use App\Models\SimulasiJawabanSiswaPerSoal;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\CalculationOfConceptionCriteria;
 
-class BuatRekapJawabanJob implements ShouldQueue
+class BuatRekapJawabanSimulasiJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -37,10 +37,10 @@ class BuatRekapJawabanJob implements ShouldQueue
      */
     public function handle()
     {
-        $tes = SiswaTes::where('siswa_id', $this->siswa_id)->first();
+        $tes = SimulasiSiswaTes::where('siswa_id', $this->siswa_id)->first();
         if($tes){
-            $jumlah_soal = Soal::where('is_aktif', 1)->count();
-            $jumlah_dijawab = JawabanSiswaPerSoal::with([
+            $jumlah_soal = SimulasiSoal::where('is_aktif', 1)->count();
+            $jumlah_dijawab = SimulasiJawabanSiswaPerSoal::with([
                 'soal:id',
                 'soal.jawaban' => function($query){
                     return $query->select(['id','is_benar','soal_id'])->where('is_benar', 1);
@@ -95,7 +95,7 @@ class BuatRekapJawabanJob implements ShouldQueue
 
             DB::beginTransaction();
 
-            RekapHasilTesSiswa::updateOrCreate(
+            SimulasiRekapHasilTesSiswa::updateOrCreate(
                 ['tes_id' => $tes->id],
                 $data
             );

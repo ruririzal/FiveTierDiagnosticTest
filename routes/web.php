@@ -1,7 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use phpDocumentor\Reflection\Types\Resource_;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,12 @@ use phpDocumentor\Reflection\Types\Resource_;
 
 Auth::routes();
 
-Route::group(['middleware' => 'auth'], function () {    
+Route::group(['middleware' => ['auth', 'TesSedangBerlangsungMiddleware']], function () {
     Route::get('/', function () {
         return redirect('/settings');
+    });
+    Route::get('/migrasi', function(){
+        Artisan::call('migrate');
     });
     Route::get('/settings', 'HomeController@index')->name('settings');
     Route::post('/profile', 'HomeController@updateProfile')->name('update_profile');
@@ -30,9 +34,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/simpan-jawaban', 'TesController@simpanJawaban')->name('simpan_jawaban');
     Route::post('/selesai-tes', 'TesController@selesaiTes')->name('selesai_tes');
     Route::post('/buat-rekap-jawaban', 'TesController@simpanJawaban')->name('buat_rekap_jawaban');
+    Route::get('/simulasi', 'SimulasiController@index')->name('tes_simulasi');
+    Route::get('/mulai-simulasi', 'SimulasiController@mulai')->name('mulai_tes_simulasi');
+    Route::post('/simpan-jawaban-simulasi', 'SimulasiController@simpanJawaban')->name('simpan_jawaban_simulasi');
+    Route::post('/selesai-simulasi', 'SimulasiController@selesaiTes')->name('selesai_tes_simulasi');
+    Route::post('/buat-rekap-jawaban-simulasi', 'SimulasiController@simpanJawaban')->name('buat_rekap_jawaban_simulasi');
 
     // admin
-    Route::group(['middleware' => 'is_admin'], function () {    
+    Route::group(['middleware' => 'is_admin'], function () {
         Route::post('/durasi-tes', 'HomeController@updateDurasiTes')->name('update_durasi_tes');
         Route::post('soal/media', 'SoalController@storeMedia')->name('store_media');
         Route::resource('soal', 'SoalController');

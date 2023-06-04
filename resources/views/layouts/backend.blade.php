@@ -26,7 +26,7 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 
     @yield('styles')
@@ -90,7 +90,7 @@
             {{-- <a href="{{ route('settings') }}" class="brand-link ">
                 <img src="{{ asset('img/default-150x150.png') }}" alt="{{ trans('panel.site_title') }}" class="brand-image">
             </a> --}}
-        
+
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user panel (optional) -->
@@ -127,6 +127,12 @@
                                 </a>
                             </li>
                         @else
+                            <li class="nav-item">
+                                <a href="{{ route('tes_simulasi') }}" class="nav-link {{ request()->is('simulasi') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-gear"></i>
+                                    <p>Simulasi Tes</p>
+                                </a>
+                            </li>
                             <li class="nav-item">
                                 <a href="{{ route('tes') }}" class="nav-link {{ request()->is('tes') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-gear"></i>
@@ -209,7 +215,7 @@
     <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- Noty -->
 	<script type="text/javascript" src="{{ asset('plugins/noty/noty.min.js') }}"></script>
-   
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
@@ -223,14 +229,14 @@
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
     <!-- Ekko Lightbox -->
     <script src="{{ asset('plugins/ekko-lightbox/ekko-lightbox.min.js') }}"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
     <script src="{{ asset('js/main.js') }}"></script>
     <!-- AdminLTE -->
     <script src="{{ asset('js/adminlte.js') }}"></script>
-    
+
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/demo.js') }}"></script>
 
@@ -240,7 +246,7 @@
     <script>
         // "use strict";
         window._token = $('meta[name="csrf-token"]').attr('content')
-        
+
         //Noty.setMaxVisible(5) //global queue's max visible amount (default is 5)
         Noty.setMaxVisible(5, 'bottomRight')
         // Set default options
@@ -257,20 +263,20 @@
             }
         })
         $(function () {
-            // hold onto the drop down menu                                             
+            // hold onto the drop down menu
             var dropdownMenu;
 
-            // and when you show it, move it to the body                                     
+            // and when you show it, move it to the body
             $(window).on('show.bs.dropdown', function (e) {
                 if($(e.target).parent().is('td')){
-                    // grab the menu        
+                    // grab the menu
                     dropdownMenu = $(e.target).find('.dropdown-menu');
                     // detach it and append it to the body
                     $('body').append(dropdownMenu.detach());
-        
+
                     // grab the new offset position
                     var eOffset = $(e.target).offset();
-        
+
                     // make sure to place it where it would normally go (this could be improved)
                     dropdownMenu.css({
                         'display': 'block',
@@ -280,7 +286,7 @@
                 }
             });
 
-            // and when you hide it, reattach the drop down, and hide it normally                                                   
+            // and when you hide it, reattach the drop down, and hide it normally
             $(window).on('hide.bs.dropdown', function (e) {
                 if($(e.target).parent().is('td')){
                     $(e.target).append(dropdownMenu.detach());

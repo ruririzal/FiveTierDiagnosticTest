@@ -26,7 +26,7 @@
                             <th rowspan="2">Nama</th>
                             <th rowspan="2">Kelas</th>
                             <th rowspan="2">Waktu Tes</th>
-                            <th rowspan="2">Tidak Dijawab</th>
+                            <th rowspan="2">Tidak Dijawab Lengkap</th>
                             @foreach(\App\Services\CalculationOfConceptionCriteria::ALL_CRITERIA as $item)
                                 @if($item['id'] == \App\Services\CalculationOfConceptionCriteria::CRITERIA_MC['id'])
                                     <th colspan="{{ count(\App\Enums\TierFiveEnums::SEMUA) + 1 }}">{{ $item['text'] }}</th>

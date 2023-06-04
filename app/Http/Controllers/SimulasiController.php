@@ -3,31 +3,31 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Soal;
 use App\Models\SiswaTes;
 use App\Models\Pengaturan;
 use App\Enums\TierFiveEnums;
+use App\Models\SimulasiSoal;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Jobs\BuatRekapJawabanJob;
-use App\Models\JawabanSiswaPerSoal;
-use App\Services\CalculationOfConceptionCriteria;
+use App\Models\SimulasiSiswaTes;
+use App\Jobs\BuatRekapJawabanSimulasiJob;
+use App\Models\SimulasiJawabanSiswaPerSoal;
 
-class TesController extends Controller
+class SimulasiController extends Controller
 {
     public function index()
     {
-        $pengaturan = Pengaturan::first() ?? Pengaturan::create(['durasi_menit'=> 120, 'durasi_menit_simulasi' => 5]);
+        $pengaturan = Pengaturan::first() ?? Pengaturan::create(['durasi_menit'=> 120, 'durasi_menit_simulasi_simulasi' => 5]);
 
-        $tes = SiswaTes::where('siswa_id', auth()->id())->first();
+        $tes = SimulasiSiswaTes::where('siswa_id', auth()->id())->first();
 
-        $jumlah_soal = Soal::where('is_aktif', 1)->count();
+        $jumlah_soal = SimulasiSoal::where('is_aktif', 1)->count();
 
         $soal = [];
         if($tes){
             //jika tes sedang berlangsung
-            if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->greaterThan(now()) && ! $tes->waktu_selesai){
-                $soal = Soal::select('id', 'teks')
+            if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai){
+                $soal = SimulasiSoal::select('id', 'teks')
                     ->with('jawaban:teks,id,soal_id', 'alasanJawaban:teks,id,soal_id')
                     ->where('is_aktif', 1)
                     ->get()
@@ -37,30 +37,38 @@ class TesController extends Controller
                     return [$item->soal_id => $item];
                 });
             //jika waktu tes sudah lewat
-            }elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit)->lessThan(now()) && ! $tes->waktu_selesai){
-                BuatRekapJawabanJob::dispatch(auth()->id());
+            }elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->lessThan(now()) && ! $tes->waktu_selesai){
+                BuatRekapJawabanSimulasiJob::dispatch(auth()->id());
                 return redirect()->route('tes');
             }else{
                 $tes->load('rekapTesSiswa');
             }
         }
 
-        return view('tes.index', compact('pengaturan', 'tes', 'jumlah_soal', 'soal'));
+        return view('simulasi.index', compact('pengaturan', 'tes', 'jumlah_soal', 'soal'));
     }
 
     public function mulai()
     {
-        $tes = SiswaTes::where('siswa_id', auth()->id())->firstOrCreate([
-            'siswa_id' => auth()->id(),
-            'waktu_mulai' => now(),
-        ]);
+        $tes = SimulasiSiswaTes::where('siswa_id', auth()->id())->first();
+        if(!$tes){
+            $tes = SimulasiSiswaTes::create([
+                'siswa_id' => auth()->id(),
+                'waktu_mulai' => now(),
+            ]);
+        }else{
+            $tes->update([
+                'waktu_mulai' => now(),
+                'waktu_selesai' => null,
+            ]);
+        }
 
-        return redirect()->route('tes');
+        return redirect()->route('tes_simulasi');
     }
 
     public function simpanJawaban(Request $request)
     {
-        $tes = SiswaTes::where('siswa_id', auth()->id())->firstOrFail();
+        $tes = SimulasiSiswaTes::where('siswa_id', auth()->id())->firstOrFail();
 
         $validated = $request->validate([
             'urutan_soal_tes' => [
@@ -68,11 +76,11 @@ class TesController extends Controller
             ],
             'soal_id' => [
                 'required',
-                Rule::exists('soal','id')->where('is_aktif', 1),
+                Rule::exists('s_soal','id')->where('is_aktif', 1),
             ],
             'jawaban_id' => [
                 'required_without_all:is_jawaban_yakin,alasan_jawaban_soal_id,is_alasan_yakin,tier_five',
-                Rule::exists('jawaban','id')->where('soal_id', $request->soal_id),
+                Rule::exists('s_jawaban','id')->where('soal_id', $request->soal_id),
             ],
             'is_jawaban_yakin' => [
                 'required_without_all:jawaban_id,alasan_jawaban_soal_id,is_alasan_yakin,tier_five',
@@ -80,7 +88,7 @@ class TesController extends Controller
             ],
             'alasan_jawaban_soal_id' => [
                 'required_without_all:jawaban_id,is_jawaban_yakin,is_alasan_yakin,tier_five',
-                Rule::exists('alasan_jawaban_soal','id')->where('soal_id', $request->soal_id),
+                Rule::exists('s_alasan_jawaban_soal','id')->where('soal_id', $request->soal_id),
             ],
             'is_alasan_yakin' => [
                 'required_without_all:jawaban_id,is_jawaban_yakin,alasan_jawaban_soal_id,tier_five',
@@ -95,12 +103,12 @@ class TesController extends Controller
         $validated['siswa_id']  = auth()->id();
         $validated['tes_id']    = $tes->id;
 
-        $jawaban_siswa = JawabanSiswaPerSoal::where('tes_id', $tes->id)
+        $jawaban_siswa = SimulasiJawabanSiswaPerSoal::where('tes_id', $tes->id)
             ->where('soal_id', $request->soal_id)
             ->first();
 
         if(empty($jawaban_siswa)){
-            $jawaban_siswa = JawabanSiswaPerSoal::create($validated);
+            $jawaban_siswa = SimulasiJawabanSiswaPerSoal::create($validated);
         }else{
             $jawaban_siswa->update(
                 $validated
@@ -126,17 +134,17 @@ class TesController extends Controller
         $belum_dijawab = $this->getJumlahBelumDijawab();
 
         if($belum_dijawab == 0 || $request->force ?? false){
-            BuatRekapJawabanJob::dispatch(auth()->id());
+            BuatRekapJawabanSimulasiJob::dispatch(auth()->id());
             return redirect()->back();
         }else{
-            return redirect()->back()->with('message', $belum_dijawab . ' Soal belum dijawab');
+            return redirect()->back()->with('message', $belum_dijawab . ' Simulasi Soal belum dijawab');
         }
     }
 
     private function getJumlahBelumDijawab()
     {
-        $jumlah_soal = Soal::where('is_aktif', 1)->count();
-        $jumlah_dijawab = JawabanSiswaPerSoal::where('siswa_id', auth()->id())->count();
+        $jumlah_soal = SimulasiSoal::where('is_aktif', 1)->count();
+        $jumlah_dijawab = SimulasiJawabanSiswaPerSoal::where('siswa_id', auth()->id())->count();
         return  $jumlah_soal - $jumlah_dijawab;
     }
 }

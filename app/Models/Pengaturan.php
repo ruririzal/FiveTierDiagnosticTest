@@ -15,12 +15,13 @@ class Pengaturan extends Model
 
     protected $fillable = [
         'durasi_menit',
+        'durasi_menit_simulasi',
     ];
 
     protected $cast = [
 
     ];
-    
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
