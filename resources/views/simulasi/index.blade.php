@@ -11,6 +11,41 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 @endsection
+@section('nomer-soal')
+    @if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
+        <h5 class="text-center" id="menu-soal">Menu Soal</h5>
+        <table style="width: 145px;border-right: 1px solid #dee2e6;margin:auto">
+            <tr>
+                <td rowspan="2">No</td>
+                <td colspan="5" class="text-center">Tier</td>
+            </tr>
+            <tr>
+                <td class="text-center">1</td>
+                <td class="text-center">2</td>
+                <td class="text-center">3</td>
+                <td class="text-center">4</td>
+                <td class="text-center">5</td>
+            </tr>
+            @foreach($soal as $key => $itemSoal)
+            <tr>
+                <td>
+                    {{$key+1}}
+                </td>
+                <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="1" class="btn btn-sm btn-default ganti-tab {{ optional($tes->jawaban_siswa->get($itemSoal->id))->jawaban_id ? 'bg-success' : '' }}">-</a></td>
+                <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="2" class="btn btn-sm btn-default ganti-tab {{ in_array(optional($tes->jawaban_siswa->get($itemSoal->id))->is_jawaban_yakin, ['0', '1']) ? 'bg-success' : '' }}">-</a></td>
+                <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="3" class="btn btn-sm btn-default ganti-tab {{ optional($tes->jawaban_siswa->get($itemSoal->id))->alasan_jawaban_soal_id ? 'bg-success' : '' }}">-</a></td>
+                <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="4" class="btn btn-sm btn-default ganti-tab {{ in_array(optional($tes->jawaban_siswa->get($itemSoal->id))->is_alasan_yakin, ['0', '1']) ? 'bg-success' : '' }}">-</a></td>
+                <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="5" class="btn btn-sm btn-default ganti-tab {{ optional($tes->jawaban_siswa->get($itemSoal->id))->tier_five ? 'bg-success' : '' }}">-</a></td>
+            </tr>
+            @endforeach
+        </table>
+
+        <form action="{{ route('selesai_tes_simulasi') }}" method="POST" id="selesai_tes_simulasi_form">
+            @csrf
+            <button style="margin:auto" class="nav-link bg-secondary btn" id="btn_akhir_tes" type="submit">Akhiri Simulasi</button>
+        </form>
+    @endif
+@endsection
 @section('content')
     <div class="card">
         <div class="card-header">
@@ -62,7 +97,10 @@
                 <br>
                 <a href="{{ route('mulai_tes_simulasi') }}" class="btn btn-primary btn-sm">Mulai Simulasi</a>
             @elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
-                <ul class="nav nav-tabs" id="soalTab" role="tablist">
+                <div style="padding-top:20px" class="d-lg-none sticky-top float-right">
+                    <a href="#menu-soal" class="btn btn-sm btn-info " data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i> Menu Soal</a>
+                </div>
+                <ul class="nav nav-tabs" style="display: none" id="soalTab" role="tablist">
                     @foreach($soal as $key => $itemSoal)
                         @php
                             $tier_soal_terjawab_semua = (optional($tes->jawaban_siswa->get($itemSoal->id))->jawaban_id ? true : false)
@@ -75,12 +113,6 @@
                             <a class="nav-link soal-tab {{ $tier_soal_terjawab_semua ? 'bg-success' : '' }}" id="soal-tab-{{$key+1}}" data-toggle="tab" href="#soal-{{$key+1}}" role="tab" aria-controls="soal-{{$key+1}}" aria-selected="false">{{$key+1}}</a>
                         </li>
                     @endforeach
-                    <li class="nav-item ml-3 mb-2">
-                        <form action="{{ route('selesai_tes_simulasi') }}" method="POST" id="selesai_tes_simulasi_form">
-                            @csrf
-                            <button class="nav-link bg-secondary btn" id="btn_akhir_tes" type="submit">Akhiri Simulasi</button>
-                        </form>
-                    </li>
                 </ul>
                 <style>
                     .jawaban_radio{
@@ -108,32 +140,7 @@
                     @media(min-width: 768px){
                     }
                 </style>
-                <table style="width: 145px;float:left; border-right: 1px solid #dee2e6;">
-                    <tr>
-                        <td rowspan="2">No</td>
-                        <td colspan="5" class="text-center">Tier</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td class="text-center">2</td>
-                        <td class="text-center">3</td>
-                        <td class="text-center">4</td>
-                        <td class="text-center">5</td>
-                    </tr>
-                    @foreach($soal as $key => $itemSoal)
-                    <tr>
-                        <td>
-                            {{$key+1}}
-                        </td>
-                        <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="1" class="btn btn-sm btn-default ganti-tab {{ optional($tes->jawaban_siswa->get($itemSoal->id))->jawaban_id ? 'bg-success' : '' }}">-</a></td>
-                        <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="2" class="btn btn-sm btn-default ganti-tab {{ in_array(optional($tes->jawaban_siswa->get($itemSoal->id))->is_jawaban_yakin, ['0', '1']) ? 'bg-success' : '' }}">-</a></td>
-                        <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="3" class="btn btn-sm btn-default ganti-tab {{ optional($tes->jawaban_siswa->get($itemSoal->id))->alasan_jawaban_soal_id ? 'bg-success' : '' }}">-</a></td>
-                        <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="4" class="btn btn-sm btn-default ganti-tab {{ in_array(optional($tes->jawaban_siswa->get($itemSoal->id))->is_alasan_yakin, ['0', '1']) ? 'bg-success' : '' }}">-</a></td>
-                        <td><a data-tab="soal-tab-{{ $key+1 }}" data-tier="5" class="btn btn-sm btn-default ganti-tab {{ optional($tes->jawaban_siswa->get($itemSoal->id))->tier_five ? 'bg-success' : '' }}">-</a></td>
-                    </tr>
-                    @endforeach
-                </table>
-                <div class="row" style="width: calc(99% - 145px);float: right;">
+                <div class="row" style="padding: 0 20px">
                     <div class="col-xs-12">
                         <div class="tab-content">
                             @foreach($soal as $key => $itemSoal)
@@ -275,6 +282,10 @@
     <script>
         @if( $tes )
             @if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
+                $('a[href="#menu-soal"]').on('click', function(){
+                    $(window).scrollTop($('#menu-soal').offset().top);
+                });
+
                 function secondsToHms(d) {
                     d = Number(d);
                     var h = Math.floor(d / 3600);
@@ -301,7 +312,9 @@
                     $('#btn_akhir_tes').trigger('click');
                 })
                 $('.ganti-tab').on('click', function(){
-                    $('#' + $(this).data('tab')).trigger('click')
+                    $('#' + $(this).data('tab')).trigger('click');
+                    $('#sidebar-overlay').trigger('click');
+                    $(window).scrollTop($('.card-header').offset().top);
                 })
                 $(document).on('change', '.jawaban, .is_jawaban_yakin, .alasan_jawaban, .is_alasan_yakin, .tier_five', function(e){
                     let input = $(e.target);

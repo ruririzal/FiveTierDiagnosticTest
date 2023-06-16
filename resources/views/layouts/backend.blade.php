@@ -140,6 +140,12 @@
                                 </a>
                             </li>
                         @endif
+                        <li class="nav-item">
+                            <hr>
+                        </li>
+                        <li class="nav-item">
+                            @yield('nomer-soal')
+                        </li>
                     </ul>
                 </nav>
 
