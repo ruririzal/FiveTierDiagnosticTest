@@ -39,7 +39,7 @@ class SimulasiController extends Controller
             //jika waktu tes sudah lewat
             }elseif($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->lessThan(now()) && ! $tes->waktu_selesai){
                 BuatRekapJawabanSimulasiJob::dispatch(auth()->id());
-                return redirect()->route('tes');
+                return redirect()->route('simulasi');
             }else{
                 $tes->load('rekapTesSiswa');
             }
