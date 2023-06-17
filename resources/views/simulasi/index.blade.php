@@ -12,7 +12,7 @@
     </div><!-- /.row -->
 @endsection
 @section('nomer-soal')
-    @if($tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
+    @if($tes && $tes->waktu_mulai->addMinutes($pengaturan->durasi_menit_simulasi)->greaterThan(now()) && ! $tes->waktu_selesai)
         <h5 class="text-center" id="menu-soal">Menu Soal</h5>
         <table style="width: 145px;border-right: 1px solid #dee2e6;margin:auto">
             <tr>
