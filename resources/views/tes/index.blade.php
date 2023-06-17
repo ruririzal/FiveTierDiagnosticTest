@@ -150,33 +150,33 @@
                                     <div class="teks mt-3 mb-2">{!! $itemSoal->teks !!}</div>
                                     @foreach($itemSoal->jawaban as $itemJawaban)
                                         <label for="jawaban_{{ $itemJawaban->id }}" class="d-flex teks">
-                                            <input type="radio" name="jawaban_{{ $itemSoal->id }}" class="jawaban_radio jawaban" data-soal="{{ $itemSoal->id }}" id="jawaban_{{ $itemJawaban->id }}" value="{{ $itemJawaban->id }}" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->jawaban_id === $itemJawaban->id) ? 'checked' : '' }}>
+                                            <input type="radio" name="jawaban_{{ $itemSoal->id }}" class="jawaban_radio jawaban" data-soal="{{ $itemSoal->id }}" id="jawaban_{{ $itemJawaban->id }}" value="{{ $itemJawaban->id }}" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->jawaban_id . '' === '' . $itemJawaban->id) ? 'checked' : '' }}>
                                             {!! $itemJawaban->teks !!}
                                         </label>
                                     @endforeach
                                     Tingkat Keyakinan Jawaban :
                                     <div>
-                                        <input type="radio" name="is_jawaban_yakin_{{ $itemSoal->id }}" class="is_jawaban_yakin" data-soal="{{ $itemSoal->id }}" id="is_jawaban_yakin_1_{{ $itemSoal->id }}" value="1" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_jawaban_yakin === 1) ? 'checked' : '' }}>
+                                        <input type="radio" name="is_jawaban_yakin_{{ $itemSoal->id }}" class="is_jawaban_yakin" data-soal="{{ $itemSoal->id }}" id="is_jawaban_yakin_1_{{ $itemSoal->id }}" value="1" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_jawaban_yakin . '' === '1') ? 'checked' : '' }}>
                                         <label for="is_jawaban_yakin_1_{{ $itemSoal->id }}" class="jawaban_radio">Yakin</label>
                                     </div>
                                     <div>
-                                        <input type="radio" name="is_jawaban_yakin_{{ $itemSoal->id }}" class="is_jawaban_yakin" data-soal="{{ $itemSoal->id }}" id="is_jawaban_yakin_0_{{ $itemSoal->id }}" value="0" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_jawaban_yakin === 0) ? 'checked' : '' }}>
+                                        <input type="radio" name="is_jawaban_yakin_{{ $itemSoal->id }}" class="is_jawaban_yakin" data-soal="{{ $itemSoal->id }}" id="is_jawaban_yakin_0_{{ $itemSoal->id }}" value="0" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_jawaban_yakin . '' === '0') ? 'checked' : '' }}>
                                         <label for="is_jawaban_yakin_0_{{ $itemSoal->id }}" class="jawaban_radio">Tidak Yakin</label>
                                     </div>
                                     <div class="teks mt-3 mb-2">Alasan :</div>
                                     @foreach($itemSoal->alasanJawaban as $itemAlasanJawaban)
                                         <label for="alasan_jawaban_{{ $itemAlasanJawaban->id }}" class="d-flex teks">
-                                            <input type="radio" class="jawaban_radio alasan_jawaban" data-soal="{{ $itemSoal->id }}" name="alasan_jawaban_{{ $itemSoal->id }}" id="alasan_jawaban_{{ $itemAlasanJawaban->id }}" value="{{ $itemAlasanJawaban->id }}" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->alasan_jawaban_soal_id === $itemAlasanJawaban->id) ? 'checked' : '' }}>
+                                            <input type="radio" class="jawaban_radio alasan_jawaban" data-soal="{{ $itemSoal->id }}" name="alasan_jawaban_{{ $itemSoal->id }}" id="alasan_jawaban_{{ $itemAlasanJawaban->id }}" value="{{ $itemAlasanJawaban->id }}" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->alasan_jawaban_soal_id . '' === '' . $itemAlasanJawaban->id) ? 'checked' : '' }}>
                                             {!! $itemAlasanJawaban->teks !!}
                                         </label>
                                     @endforeach
                                     Tingkat Keyakinan Alasan :
                                     <div>
-                                        <input type="radio" name="is_alasan_yakin_{{ $itemSoal->id }}" class="is_alasan_yakin" data-soal="{{ $itemSoal->id }}" id="is_alasan_yakin_1_{{ $itemSoal->id }}" value="1" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_alasan_yakin === 1) ? 'checked' : '' }}>
+                                        <input type="radio" name="is_alasan_yakin_{{ $itemSoal->id }}" class="is_alasan_yakin" data-soal="{{ $itemSoal->id }}" id="is_alasan_yakin_1_{{ $itemSoal->id }}" value="1" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_alasan_yakin . '' === '1') ? 'checked' : '' }}>
                                         <label for="is_alasan_yakin_1_{{ $itemSoal->id }}" class="jawaban_radio">Yakin</label>
                                     </div>
                                     <div>
-                                        <input type="radio" name="is_alasan_yakin_{{ $itemSoal->id }}" class="is_alasan_yakin" data-soal="{{ $itemSoal->id }}" id="is_alasan_yakin_0_{{ $itemSoal->id }}" value="0" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_alasan_yakin === 0) ? 'checked' : '' }}>
+                                        <input type="radio" name="is_alasan_yakin_{{ $itemSoal->id }}" class="is_alasan_yakin" data-soal="{{ $itemSoal->id }}" id="is_alasan_yakin_0_{{ $itemSoal->id }}" value="0" {{ (optional($tes->jawaban_siswa->get($itemSoal->id))->is_alasan_yakin . '' === '0') ? 'checked' : '' }}>
                                         <label for="is_alasan_yakin_0_{{ $itemSoal->id }}" class="jawaban_radio">Tidak Yakin</label>
                                     </div>
                                     <div class="teks mt-3">Saya menentukan jawaban dan alasan berdasarkan</div>
